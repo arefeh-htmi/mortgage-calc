@@ -1,10 +1,10 @@
 import React, { ReactNode } from "react";
 import styled from "styled-components";
+import { colors } from "utils/styleConstants";
 
 interface ButtonProps {
   children: ReactNode;
-  background: string;
-  textColor: string;
+  kind: "primary" | "secondary"; //secondary is a gray button, not really used anywhere
   onClick: (e: React.MouseEvent) => void;
 }
 
@@ -21,16 +21,15 @@ const elements = {
 };
 
 export function Button({
-  background,
-  textColor,
   onClick,
+  kind,
   children,
   ...rest
 }: ButtonProps): JSX.Element {
   return (
     <elements.button
-      background={background}
-      textColor={textColor}
+      background={kind == "primary" ? colors.secondary : ""}
+      textColor={kind == "primary" ? colors.white : ""}
       onClick={onClick}
       {...rest}
     >

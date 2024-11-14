@@ -7,7 +7,6 @@ import {
   CurrencyFormat,
   useCurrencyFormatter,
 } from "hooks/useCurrencyFormatter";
-import { colors } from "utils/styleConstants";
 import { Text } from "components/Text";
 import { useSubmitMortgageApplication } from "hooks/useSubmitMorgageApplication";
 import {
@@ -54,8 +53,7 @@ type MortgageFormModel = {
 export function MortgageCalculator(_: MortgageCalculatorProps): JSX.Element {
   const currencyFormatter = useCurrencyFormatter();
   const formatDuration = useTimeDurationFormatter();
-
-  const submitMortgage = useSubmitMortgageApplication();
+  const submitMortgage = useSubmitMortgageApplication(); 
   const { formValues, handleChange } = useForm<MortgageFormModel>({
     amount: 0,
     time: 2,
@@ -109,8 +107,7 @@ export function MortgageCalculator(_: MortgageCalculatorProps): JSX.Element {
         />
 
         <Button
-          background={colors.secondary}
-          textColor={colors.white}
+          kind="primary" 
           onClick={handleSubmit}
         >
           Till ansökan
