@@ -21,6 +21,10 @@ export default defineConfig({
         replacement: path.resolve(__dirname, "./src/screens"),
       },
       {
+        find: "contexts",
+        replacement: path.resolve(__dirname, "./src/contexts"),
+      },
+      {
         find: "utils",
         replacement: path.resolve(__dirname, "./src/utils"),
       },

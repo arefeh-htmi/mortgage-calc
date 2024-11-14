@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { currencyFormatter } from "utils/currencyFormater";
+import { useCurrencyFormatter } from "hooks/useCurrencyFormatter";
 import { paymentCalculator } from "utils/paymentCalculator";
 import { colors } from "utils/styleConstants";
 
@@ -8,7 +8,7 @@ interface monthlyPaymentInfoBoxProps {
   time: number;
 }
 
-const elemtes = {
+const elements = {
   monthlyPaymentInfoBoxWrapper: styled.div`
     background: ${colors.primary};
     color: ${colors.white};
@@ -36,11 +36,12 @@ export function MonthlyPaymentInfoBox({
   time,
 }: monthlyPaymentInfoBoxProps): JSX.Element {
   const monthlyPayment = paymentCalculator(amount, time);
+  const currencyFormatter = useCurrencyFormatter();
 
   return (
-    <elemtes.monthlyPaymentInfoBoxWrapper>
+    <elements.monthlyPaymentInfoBoxWrapper>
       <h5>Exempel på månadskostnad</h5>
       <span> {currencyFormatter(monthlyPayment)} / mån </span>
-    </elemtes.monthlyPaymentInfoBoxWrapper>
+    </elements.monthlyPaymentInfoBoxWrapper>
   );
 }

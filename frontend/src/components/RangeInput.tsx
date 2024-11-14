@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { useMemo } from "react";
 import styled from "styled-components";
 import { colors } from "utils/styleConstants";
 
@@ -106,7 +106,11 @@ export function RangeInput({
   formatValue = (value) => value.toString(),
   ...rest
 }: RangeInputProps): JSX.Element {
-  const backgroundFillValue = Number(((value - min) * 100) / (max - min));
+  
+  const backgroundFillValue = useMemo(
+    () => Number(((value - min) * 100) / (max - min)),
+    [value, min, max]
+  );
 
   return (
     <elements.rangeWrapper>

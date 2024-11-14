@@ -1,12 +1,19 @@
-import { Button } from "components/Button.comonent";
-import { MonthlyPaymentInfoBox } from "components/MonthlyPaymentInfoBox.component";
-import { RangeInput } from "components/RangeInput.component";
+import { Button } from "components/Button";
+import { MonthlyPaymentInfoBox } from "components/MonthlyPaymentInfoBox";
+import { RangeInput } from "components/RangeInput";
 import { useForm } from "hooks/useForm";
-import React from "react";
 import styled from "styled-components";
-import { BASE_URL } from "utils/constants";
-import { CurrencyFormat, currencyFormatter } from "utils/currencyFormater";
+import {
+  CurrencyFormat,
+  useCurrencyFormatter,
+} from "hooks/useCurrencyFormatter";
 import { colors } from "utils/styleConstants";
+import { Text } from "components/Text";
+import { useSubmitMortgageApplication } from "hooks/useSubmitMorgageApplication";
+import {
+  TimeDurationFormat,
+  useTimeDurationFormatter,
+} from "hooks/useTimeDurationFormatter";
 
 interface MortgageCalculatorProps {}
 
@@ -40,32 +47,34 @@ const elements = {
   `,
 };
 
+type MortgageFormModel = {
+  amount: number;
+  time: number;
+};
 export function MortgageCalculator(_: MortgageCalculatorProps): JSX.Element {
-  const { formValues, handleChange } = useForm({
+  const currencyFormatter = useCurrencyFormatter();
+  const formatDuration = useTimeDurationFormatter();
+
+  const submitMortgage = useSubmitMortgageApplication();
+  const { formValues, handleChange } = useForm<MortgageFormModel>({
     amount: 0,
     time: 2,
   });
 
-  function handleSubmit(e: React.MouseEvent): void {
-    e.preventDefault();
-
-    const params = new URLSearchParams();
-    params.append("amount", formValues.amount);
-    params.append("time", formValues.time);
-
-    const url = `${BASE_URL}/loan-application/?${params.toString()}`;
-    console.log(url);
+  function handleSubmit(): void {
+    submitMortgage(formValues.amount, formValues.time);
   }
 
   return (
     <elements.calculatorContainer>
       <elements.calculatorHeader>
-        <h3>Lånekalkyl</h3>
+        <Text kind="Title">Lånekalkyl</Text>
         <MonthlyPaymentInfoBox
           amount={formValues.amount}
           time={formValues.time}
         />
       </elements.calculatorHeader>
+
       <elements.mortgageFormContainer>
         <RangeInput
           value={formValues.amount}
@@ -84,6 +93,7 @@ export function MortgageCalculator(_: MortgageCalculatorProps): JSX.Element {
             200000
           )}, i steg om 10000`}
         />
+
         <RangeInput
           value={formValues.time}
           name="time"
@@ -91,12 +101,15 @@ export function MortgageCalculator(_: MortgageCalculatorProps): JSX.Element {
           max={10}
           step={1}
           onChange={handleChange}
-          formatValue={(value) => `${value} år`}
+          formatValue={(value) =>
+            formatDuration(value, TimeDurationFormat.YEAR)
+          }
           label="Lånetid"
           aria-valuetext={`Lånetid dragleglare, som visar ${formValues.time},från 2 till 10`}
         />
+
         <Button
-          background={colors.secoundary}
+          background={colors.secondary}
           textColor={colors.white}
           onClick={handleSubmit}
         >

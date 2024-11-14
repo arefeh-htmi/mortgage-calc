@@ -2,11 +2,11 @@ import React, { useState } from "react";
 
 type FormPrimeTypes = string | number | boolean;
 
-type useFormSpecs<T, K extends FormPrimeTypes> = {
-  [key in keyof T]: K;
+type useFormSpecs<FormModel, K extends FormPrimeTypes> = {
+  [key in keyof FormModel]: K;
 };
 
-export function useForm(initialValues: useFormSpecs<any, any>) {
+export function useForm<FormModel>(initialValues: useFormSpecs<FormModel, any>) {
   const [formValues, setFormValues] = useState(initialValues);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {

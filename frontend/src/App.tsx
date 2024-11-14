@@ -1,7 +1,8 @@
-import { Fragment } from "react";
+import { StrictMode } from "react";
 import { MortgageCalculator } from "screens/MortgageCalculator";
 import styled from "styled-components";
 import { GlobalStyles } from "./globalStyles";
+import { LocaleProvider } from "./contexts/LocaleProvider";
 
 const elements = {
   appContainer: styled.div`
@@ -16,12 +17,14 @@ const elements = {
 
 function App() {
   return (
-    <Fragment>
+    <StrictMode>
       <GlobalStyles />
-      <elements.appContainer>
-        <MortgageCalculator />
-      </elements.appContainer>
-    </Fragment>
+      <LocaleProvider>
+          <elements.appContainer>
+            <MortgageCalculator />
+          </elements.appContainer>
+      </LocaleProvider>
+    </StrictMode>
   );
 }
 
