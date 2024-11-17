@@ -1,11 +1,10 @@
-
 export enum TimeDurationFormat {
   "MONTH_SHORT",
   "YEAR",
 }
 export function useTimeDurationFormatter() {
   const formatTimeDuration = (
-    timeDuration: number,
+    timeDuration: number | string,
     format: TimeDurationFormat
   ): string => {
     switch (format) {

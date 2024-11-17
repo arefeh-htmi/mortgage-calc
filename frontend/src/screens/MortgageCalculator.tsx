@@ -1,6 +1,6 @@
 import { Button } from "components/Button";
-import { MonthlyPaymentInfoBox } from "components/MonthlyPaymentInfoBox";
-import { RangeInput } from "components/RangeInput";
+import { InformationBox } from "components/InformationBox";
+import { SliderRangeField } from "components/RangeInput";
 import { useForm } from "hooks/useForm";
 import styled from "styled-components";
 import {
@@ -8,11 +8,12 @@ import {
   useCurrencyFormatter,
 } from "hooks/useCurrencyFormatter";
 import { Text } from "components/Text";
-import { useSubmitMortgageApplication } from "hooks/useSubmitMorgageApplication";
+import { useSubmitMortgageApplication } from "hooks/useSubmitMortgageApplication";
 import {
   TimeDurationFormat,
   useTimeDurationFormatter,
 } from "hooks/useTimeDurationFormatter";
+import { calculateMonthlyPayment } from "utils/paymentCalculator";
 
 interface MortgageCalculatorProps {}
 
@@ -53,11 +54,12 @@ type MortgageFormModel = {
 export function MortgageCalculator(_: MortgageCalculatorProps): JSX.Element {
   const currencyFormatter = useCurrencyFormatter();
   const formatDuration = useTimeDurationFormatter();
-  const submitMortgage = useSubmitMortgageApplication(); 
+  const submitMortgage = useSubmitMortgageApplication();
   const { formValues, handleChange } = useForm<MortgageFormModel>({
     amount: 0,
     time: 2,
   });
+  const monthlyPayment = calculateMonthlyPayment(formValues.amount, formValues.time);
 
   function handleSubmit(): void {
     submitMortgage(formValues.amount, formValues.time);
@@ -67,14 +69,19 @@ export function MortgageCalculator(_: MortgageCalculatorProps): JSX.Element {
     <elements.calculatorContainer>
       <elements.calculatorHeader>
         <Text kind="Title">Lånekalkyl</Text>
-        <MonthlyPaymentInfoBox
-          amount={formValues.amount}
-          time={formValues.time}
-        />
+        <InformationBox>
+          <Text kind="SubTitle">Exempel på månadskostnad</Text>
+          <Text>
+            {formatDuration(
+              currencyFormatter(monthlyPayment),
+              TimeDurationFormat.MONTH_SHORT
+            )}
+          </Text>
+        </InformationBox>
       </elements.calculatorHeader>
 
       <elements.mortgageFormContainer>
-        <RangeInput
+        <SliderRangeField
           value={formValues.amount}
           name="amount"
           min={20000}
@@ -85,14 +92,14 @@ export function MortgageCalculator(_: MortgageCalculatorProps): JSX.Element {
             currencyFormatter(value, CurrencyFormat.Short_CURRENCY)
           }
           label="Lånebelopp"
-          aria-valuetext={`Lånebelopp dragleglare, som visar ${
+          ariaValueText={`Lånebelopp dragleglare, som visar ${
             formValues.amount
           },från ${currencyFormatter(20000)} till ${currencyFormatter(
             200000
           )}, i steg om 10000`}
         />
 
-        <RangeInput
+        <SliderRangeField
           value={formValues.time}
           name="time"
           min={2}
@@ -103,13 +110,10 @@ export function MortgageCalculator(_: MortgageCalculatorProps): JSX.Element {
             formatDuration(value, TimeDurationFormat.YEAR)
           }
           label="Lånetid"
-          aria-valuetext={`Lånetid dragleglare, som visar ${formValues.time},från 2 till 10`}
+          ariaValueText={`Lånetid dragleglare, som visar ${formValues.time}, från 2 till 10`}
         />
 
-        <Button
-          kind="primary" 
-          onClick={handleSubmit}
-        >
+        <Button kind="primary" onClick={handleSubmit}>
           Till ansökan
         </Button>
       </elements.mortgageFormContainer>

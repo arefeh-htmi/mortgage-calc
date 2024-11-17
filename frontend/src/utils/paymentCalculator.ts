@@ -1,13 +1,11 @@
 import { annualInterestRate } from "./constants";
-/**
- * No major changes
- * **/ 
-export function paymentCalculator(amount: number, time: number): number {
+
+export function calculateMonthlyPayment(amount: number, years: number): number {
   //     belopp * månadsräntesats * ( ( 1 + månadsräntesats ) ^ antal månader )
   // ----------------------------------------------------------------------
   //         ( ( 1 + månadsräntesats ) ^ antal månader ) - 1
 
-  const totalMonth = time * 12;
+  const totalMonth = years * 12;
   const monthlyInterestRate = annualInterestRate / 12 / 100;
   const monthlyInterestInTime = Math.pow(1 + monthlyInterestRate, totalMonth); // ( ( 1 + månadsräntesats ) ^ antal månader )
   let monthlyPayment =

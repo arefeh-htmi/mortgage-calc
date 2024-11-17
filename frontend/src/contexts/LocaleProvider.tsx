@@ -3,7 +3,8 @@ export enum LocaleType {
   sweden = "se"
 }
 
-// Locale is used to know the 'country' that user is in, and Language to select the 
+/** Locale is used to know the 'country/location' that user is in. The only value for it is sweden right now
+ */
 const LocaleProviderContext = createContext<
   [LocaleType, (value: LocaleType) => void]
 >(undefined as any);

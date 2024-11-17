@@ -1,14 +1,14 @@
+import { styled } from "contexts/ThemeProvider";
 import { useMemo } from "react";
-import styled from "styled-components";
-import { colors } from "utils/styleConstants";
 
-interface RangeInputProps {
+interface SliderRangeFieldProps {
   name: string;
   min: number;
   max: number;
   step?: number;
   label: string;
   value: number;
+  ariaValueText?: string;
   onChange?: (e: any) => void;
   formatValue?: (value: number) => string;
 }
@@ -31,17 +31,18 @@ const elements = {
     position: relative;
     width: 100%;
     height: 1.5rem;
-    border-radius: 0.75rem;
+    border-radius: ${({ theme }) => theme.all.borderRadius_lg};
     transition: 200ms ease-in-out;
-    background: ${({ backgroundFill }) =>
-      `-webkit-linear-gradient(left, ${colors.primary} 0%, ${colors.primary} ${backgroundFill}%, ${colors.white} ${backgroundFill}%)`};
+    background: ${({ backgroundFill, theme }) =>
+      `-webkit-linear-gradient(left, ${theme.colors.primary} 0%, ${theme.colors.primary} ${backgroundFill}%, transparent ${backgroundFill}%)`};
+    appearance: none;
     -webkit-appearance: none;
 
     &::-webkit-slider-runnable-track {
       width: 100%;
       height: 100%;
-      border-radius: 0.75rem;
-      border: 1px solid ${colors.gray};
+      border-radius: ${({ theme }) => theme.all.borderRadius_lg};
+      border: ${({ theme }) => `1px solid ${theme.colors.gray}`};
       transition: 200ms ease-in-out;
       cursor: pointer;
     }
@@ -49,8 +50,8 @@ const elements = {
     &::-moz-range-track {
       width: 100%;
       height: 100%;
-      border-radius: 0.75rem;
-      border: 1px solid ${colors.gray};
+      border-radius: ${({ theme }) => theme.all.borderRadius_lg};
+      border: ${({ theme }) => `1px solid ${theme.colors.gray}`};
       transition: 200ms ease-in-out;
       cursor: pointer;
     }
@@ -58,9 +59,9 @@ const elements = {
     &::-moz-range-thumb {
       height: 2.5rem;
       width: 2.5rem;
-      border: 1.5px solid ${colors.white};
-      border-radius: 0.75rem;
-      background: ${colors.primary};
+      border: ${({ theme }) => `1.5px solid ${theme.colors.white}`};
+      border-radius: ${({ theme }) => theme.all.borderRadius_lg};
+      background: ${({ theme }) => `1.5px solid ${theme.colors.primary}`};
       transition: 200ms ease-in-out;
       cursor: pointer;
     }
@@ -69,10 +70,11 @@ const elements = {
       width: 2.5rem;
       height: 2.5rem;
       margin-top: -0.5rem;
-      border: 1.5px solid ${colors.white};
-      border-radius: 100%;
-      background: ${colors.primary};
+      border: ${({ theme }) => `1.5px solid ${theme.colors.white}`};
+      border-radius: ${({ theme }) => theme.all.borderRadius_round};
+      background: ${({ theme }) => theme.colors.primary};
       -webkit-appearance: none;
+      transition: 200ms ease-in-out;
       cursor: pointer;
     }
   `,
@@ -81,7 +83,7 @@ const elements = {
     left: ${({ calcValue }) => `calc(${calcValue}% - (${calcValue}px))`};
     bottom: 0;
     transform: translateX(-100%);
-    color: ${colors.white};
+    color: ${({ theme }) => theme.colors.white};
     user-select: none;
     white-space: nowrap;
   `,
@@ -89,25 +91,24 @@ const elements = {
     position: absolute;
     right: 0.9rem;
     bottom: 0;
-    color: ${colors.gray};
+    color: ${({ theme }) => theme.colors.gray};
     user-select: none;
     white-space: nowrap;
   `,
 };
 
-export function RangeInput({
+export function SliderRangeField({
   name,
   label,
   value,
   step,
   min = 0,
   max = 100,
+  ariaValueText,
   onChange,
   formatValue = (value) => value.toString(),
-  ...rest
-}: RangeInputProps): JSX.Element {
-  
-  const backgroundFillValue = useMemo(
+}: SliderRangeFieldProps): JSX.Element {
+  const sliderProgressValue = useMemo(
     () => Number(((value - min) * 100) / (max - min)),
     [value, min, max]
   );
@@ -128,10 +129,14 @@ export function RangeInput({
         max={max}
         step={step}
         onChange={onChange}
-        backgroundFill={backgroundFillValue}
-        {...rest}
+        aria-valuemax={max}
+        aria-valuemin={min}
+        aria-valuenow={value}
+        aria-invalid={value > max || value < min}
+        aria-valuetext={ariaValueText}
+        backgroundFill={sliderProgressValue}
       />
-      <elements.rangeValue calcValue={backgroundFillValue}>
+      <elements.rangeValue calcValue={sliderProgressValue}>
         {formatValue(value)}
       </elements.rangeValue>
     </elements.rangeWrapper>

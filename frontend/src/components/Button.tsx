@@ -1,6 +1,5 @@
+import { styled } from "contexts/ThemeProvider";
 import React, { ReactNode } from "react";
-import styled from "styled-components";
-import { colors } from "utils/styleConstants";
 
 interface ButtonProps {
   children: ReactNode;
@@ -9,14 +8,15 @@ interface ButtonProps {
 }
 
 const elements = {
-  button: styled.button<{ background: string; textColor: string }>`
+  button: styled.button<{ isPrimary: boolean }>`
     display: flex;
     align-items: center;
-    background: ${({ background }) => background};
-    border-radius: 0.5rem;
+    background: ${({ theme, isPrimary }) =>
+      isPrimary ? theme.colors.secondary : ""};
+    border-radius: ${({ theme }) => theme.all.borderRadius_md};
     padding: 0.5rem 1rem;
     border: none;
-    color: ${({ textColor }) => textColor};
+    color: ${({ theme, isPrimary }) => (isPrimary ? theme.colors.white : "")};
   `,
 };
 
@@ -27,12 +27,7 @@ export function Button({
   ...rest
 }: ButtonProps): JSX.Element {
   return (
-    <elements.button
-      background={kind == "primary" ? colors.secondary : ""}
-      textColor={kind == "primary" ? colors.white : ""}
-      onClick={onClick}
-      {...rest}
-    >
+    <elements.button isPrimary={kind == "primary"} onClick={onClick} {...rest}>
       {children}
     </elements.button>
   );
